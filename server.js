@@ -14,14 +14,28 @@ app.use(express.static('public'));
 
 // INSERT EXPRESS APP CODE HERE...
 app.get('/api/notes', (req, res) => {
-  res.json(data);
+  const searchTerm = req.query.searchTerm;
+  if (typeof searchTerm === 'undefined') {
+    res.json(data);
+  } else {
+    const searchResults = data.filter(obj => {
+      if (obj.title.includes(searchTerm)){
+        return obj;
+      } else if (obj.content.includes(searchTerm)) {
+        return obj;
+      }
+    });
+    res.json(searchResults);
+  }
 });
+
 
 app.get('/api/notes/:id', (req, res) => {
   const targetId = parseInt(req.params.id);
   const targetArticle = data.find(obj => obj.id === targetId);
   res.send(targetArticle);
 });
+
 
 
 app.listen(8080, function () {
