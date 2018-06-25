@@ -15,7 +15,7 @@ app.use(express.static('public'));
 // INSERT EXPRESS APP CODE HERE...
 app.get('/api/notes', (req, res) => {
   const searchTerm = req.query.searchTerm;
-  if (typeof searchTerm === 'undefined') {
+  if (!searchTerm) {
     res.json(data);
   } else {
     const searchResults = data.filter(obj => {
