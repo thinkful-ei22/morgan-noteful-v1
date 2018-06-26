@@ -7,6 +7,8 @@ const data = require('./db/notes');
 
 const app = express();
 
+
+// Load other javascript files in this repo
 const { PORT } = require('./config');
 const { logRequestInfo } = require('./middleware/logger');
 
@@ -38,6 +40,21 @@ app.get('/api/notes/:id', (req, res) => {
   const targetId = parseInt(req.params.id);
   const targetArticle = data.find(obj => obj.id === targetId);
   res.send(targetArticle);
+});
+
+
+app.use(function(req, res, next){
+  var err = new Error('Not Found');
+  err.status = 404;
+  res.status(404).json({message:'Not Found'});
+});
+
+app.use(function(err, req, res, next){
+  res.status(err.status || 500);
+  res.json({
+    message: err.message,
+    error: err
+  });
 });
 
 
