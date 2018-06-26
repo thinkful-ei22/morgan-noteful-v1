@@ -32,11 +32,17 @@ app.get('/api/notes', (req, res, next) => {
 });
 
 
-app.get('/api/notes/:id', (req, res) => {
-  const targetId = parseInt(req.params.id);
-  const targetArticle = data.find(obj => obj.id === targetId);
-  res.send(targetArticle);
+app.get('/api/notes/:id', (req, res, next) => {
+  const targetId = req.params.id;
+  notes.find(targetId, (err, item) => {
+    if (err) {
+      return next(err);
+    }
+    res.json(item);
+  });
 });
+
+
 
 
 app.use(function(req, res, next){
