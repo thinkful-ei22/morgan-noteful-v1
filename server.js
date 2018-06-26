@@ -4,6 +4,8 @@ const express = require('express');
 
 // Load array of notes
 const data = require('./db/notes');
+const simDB = require('./db/simDB');
+const notes = simDB.initialize(data);
 
 const app = express();
 
@@ -14,25 +16,19 @@ const { logRequestInfo } = require('./middleware/logger');
 
 app.use(logRequestInfo);
 
-// ADD STATIC SERVER HERE
+//static server
 app.use(express.static('public'));
 
 
-// INSERT EXPRESS APP CODE HERE...
-app.get('/api/notes', (req, res) => {
+app.get('/api/notes', (req, res, next) => {
   const searchTerm = req.query.searchTerm;
-  if (!searchTerm) {
-    res.json(data);
-  } else {
-    const searchResults = data.filter(obj => {
-      if (obj.title.includes(searchTerm)){
-        return obj;
-      } else if (obj.content.includes(searchTerm)) {
-        return obj;
-      }
-    });
-    res.json(searchResults);
-  }
+
+  notes.filter(searchTerm, (err, list) => {
+    if (err) {
+      return next(err);
+    }
+    res.json(list);
+  });
 });
 
 
@@ -66,4 +62,3 @@ app.listen(PORT, function () {
 });
 
 console.log('Hello Noteful!');
-
