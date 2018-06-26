@@ -8,7 +8,9 @@ const data = require('./db/notes');
 const app = express();
 
 const { PORT } = require('./config');
+const { logRequestInfo } = require('./middleware/logger');
 
+app.use(logRequestInfo);
 
 // ADD STATIC SERVER HERE
 app.use(express.static('public'));
