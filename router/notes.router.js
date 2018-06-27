@@ -55,9 +55,6 @@ notesRouter.put('/notes/:id', (req, res, next) => {
     }
   });
 
-
-
-
   notes.update(id, updateObj, (err, item) => {
     if (err) {
       return next(err);
@@ -82,8 +79,6 @@ notesRouter.post('/notes', (req, res, next) => {
     err.status = 400;
     return next(err);
   }
-
-
 
   notes.create(newItem, (err, item) => {
     if (err) {
