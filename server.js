@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const morgan = require('morgan');
 
 // Load array of notes
 const data = require('./db/notes');
@@ -12,9 +13,13 @@ const app = express();
 
 // Load other javascript files in this repo
 const { PORT } = require('./config');
-const { logRequestInfo } = require('./middleware/logger');
 
-app.use(logRequestInfo);
+/* Not using this custom log middleware because we imported Morgan
+    const { logRequestInfo } = require('./middleware/logger');
+    app.use(logRequestInfo); 
+*/
+
+app.use(morgan('dev'));
 
 //static server
 app.use(express.static('public'));
