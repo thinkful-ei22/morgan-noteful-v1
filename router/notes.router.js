@@ -27,10 +27,16 @@ notesRouter.get('/notes', (req, res, next) => {
 notesRouter.get('/notes/:id', (req, res, next) => {
   const targetId = req.params.id;
   notes.find(targetId, (err, item) => {
+    console.log('err is: ' + err);
+    console.log('item is: ' + item);
     if (err) {
       return next(err);
     }
-    res.json(item);
+    if (item) {
+      res.json(item);
+    } else {
+      next();
+    }
   });
 });
 
@@ -50,6 +56,8 @@ notesRouter.put('/notes/:id', (req, res, next) => {
   });
 
 
+
+
   notes.update(id, updateObj, (err, item) => {
     if (err) {
       return next(err);
@@ -63,6 +71,8 @@ notesRouter.put('/notes/:id', (req, res, next) => {
 });
 
 
+
+
 notesRouter.post('/notes', (req, res, next) => {
   const {title, content} = req.body;
   const newItem = {title, content};
@@ -73,6 +83,8 @@ notesRouter.post('/notes', (req, res, next) => {
     return next(err);
   }
 
+
+
   notes.create(newItem, (err, item) => {
     if (err) {
       return next(err);
@@ -82,6 +94,25 @@ notesRouter.post('/notes', (req, res, next) => {
     } else {
       next();
     }
+  });
+});
+
+
+
+
+notesRouter.delete('/notes/:id', (req, res, next) => {
+  const targetId = req.params.id;
+
+  notes.delete(targetId, (err, result) => {
+    if (err) {
+      return next(err);
+    }
+    if (result) {
+      res.sendStatus(204);
+    } else {
+      next();
+    }
+ 
   });
 });
 
