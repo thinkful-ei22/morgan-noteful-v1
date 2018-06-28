@@ -4,9 +4,7 @@ const express = require('express');
 const morgan = require('morgan');
 
 // Load array of notes
-const data = require('./db/notes');
-const simDB = require('./db/simDB');
-const notes = simDB.initialize(data);
+const notesRouter = require('./router/notes.router.js');
 
 const app = express();
 
@@ -26,15 +24,14 @@ app.use(express.static('public'));
 
 app.use(express.json());
 
-const notesRouter = require('./router/notes.router.js');
 app.use('/api', notesRouter);
 
 
 
 app.use(function(req, res, next){
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
-  res.status(404).json({message:'Not Found'});
+  next(err);
 });
 
 

@@ -1,11 +1,11 @@
 'use strict';
 
 const express = require('express');
-const notesRouter = express.Router();
 
 const data = require('../db/notes');
-
 const simDB = require('../db/simDB');
+
+const notesRouter = express.Router();
 const notes = simDB.initialize(data);
 
 
