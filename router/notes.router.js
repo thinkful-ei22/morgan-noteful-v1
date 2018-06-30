@@ -83,7 +83,9 @@ notesRouter.post('/notes', (req, res, next) => {
   }
 
   notes.create(newItem)
-    .then( item => res.json(item) )
+    .then( item => {
+      res.location(`http://${req.headers.host}/notes/${item.id}`).status(201).json(item); 
+    })
     .catch( err => next(err) );
 });
 

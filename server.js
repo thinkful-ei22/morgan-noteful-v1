@@ -45,10 +45,20 @@ app.use(function(err, req, res, next){
 
 
 
-app.listen(PORT, function () {
-  console.info(`Server listening on ${this.address().port}`);
-}).on('error', err => {
-  console.error(err);
-});
+/* 
+wrap in 'if' statement so that server only starts if server is actually 
+started for real.   (require.main === module) is only true during actual server start.
+It is false when doing tests, so this prevents server from automatically starting
+whenever we run tests.
+*/
+if (require.main === module) {
+  app.listen(PORT, function () {
+    console.info(`Server listening on ${this.address().port}`);
+  }).on('error', err => {
+    console.error(err);
+  });
+}
+
+module.exports = app;   //export for testing
 
 console.log('Hello Noteful!');
