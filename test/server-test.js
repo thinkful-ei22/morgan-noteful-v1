@@ -143,23 +143,87 @@ describe('POST new note', function(){
 });
 
 describe('PUT handler', function(){
-  let fakeId;
+  it('should update a note with valid req.title in PUT request', function(){
+    let fakeId;
   
-  return chai.request(app)
-    .get('/api/notes')
-    .then(res => {
-      fakeId = res.body[0].id;
-    })
-    .then( () =>{
-      return chai.request(app)
-        .put(`/api/notes/${fakeId}`)
-        .send({title:'New Title', content:'New Content'})
-        .then( response => {
-          expect(response).to.be.a('object');
-          expect(response.title).to.equal('New Title');
-          expect(response.content).to.equal('New Content');
-          expect(response.id).to.equal(fakeId);
-        });
-    });
+    return chai.request(app)
+      .get('/api/notes')
+      .then(res => {
+        fakeId = res.body[0].id;
+      })
+      .then( () =>{
+        return chai.request(app)
+          .put(`/api/notes/${fakeId}`)
+          .send({title:'New Title', content:'New Content'})
+          .then( response => {
+            expect(response).to.be.a('object');
+            expect(response.body.title).to.equal('New Title');
+            expect(response.body.content).to.equal('New Content');
+            expect(response.body.id).to.equal(fakeId);
+          });
+      });
+  });
+
+
+  it('should return 404 if invalid id is provided', function(){
+    return chai.request(app)
+      .put('/api/notes/NOT-AN-ID')
+      .send({title:'New Title', content:'New Content'})
+      .then(response => {
+        expect(response).to.have.status(404);
+      });  
+  });
+
+
+  it('should return a message if invalide title is provided', function(){
+    let fakeId;
+  
+    return chai.request(app)
+      .get('/api/notes')
+      .then(res => {
+        fakeId = res.body[0].id;
+      }).then( () => {
+        return chai.request(app)
+          .put('/api/notes/' + fakeId)
+          .send({title:'', content:'New Content'})
+          .then( function(res){
+            expect(res).to.be.a('object');
+            expect(res.body.message).to.equal('Missing `title` in request body.');
+            expect(res).to.have.status(400);
+          });
+      });
+  });
+
 });
 
+describe('DELETE queries', function(){
+  it('should delete a Note if provided a valid Id', function(){
+    let fakeId;
+    let priorLength;
+  
+    return chai.request(app)
+      .get('/api/notes')
+      .then(res => {
+        fakeId = res.body[0].id;
+        priorLength = res.body.length;
+      }).then( () => {
+        return chai.request(app)
+          .delete('/api/notes/' + fakeId)
+          .then( response => {
+            expect(response).to.have.status(204);
+          }).then( () => {
+            return chai.request(app)
+              .get('/api/notes')
+              .then( res => {
+                expect(res.body.length).to.equal(priorLength - 1);
+              });
+          });
+      });
+  });
+
+  it('should return 404 if incorrect Id on DELETE request', function(){
+    return chai.request(app)
+      .delete('/api/notes/NOT-AN-ID')
+      .then(res => expect(res).to.have.status(404));
+  });
+});
