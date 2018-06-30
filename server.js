@@ -61,4 +61,4 @@ if (require.main === module) {
 
 module.exports = app;   //export for testing
 
-console.log('Hello Noteful!');
+console.log('Hello Notefu!');
