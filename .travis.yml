@@ -1,2 +1,8 @@
 language: node_js
 node_js: node
+deploy:
+  provider: heroku
+  api_key: 21b7f0ef-d636-477d-95b3-58383793be41
+  app: 'yes'
+  on:
+    repo: thinkful-ei22/morgan-noteful-v1
